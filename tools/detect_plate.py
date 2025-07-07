@@ -2,13 +2,16 @@
 import argparse
 import time
 from pathlib import Path
-import os
+import os, sys
 import cv2
 import torch
 import torch.backends.cudnn as cudnn
 from numpy import random
 import copy
 import numpy as np
+
+root_path=os.path.dirname(os.path.abspath(os.path.dirname(__file__))) # 项目根路径：获取当前路径，再上级路径
+sys.path.append(root_path)  # 将项目根路径写入系统路径
 from models.experimental import attempt_load
 from utils.datasets import letterbox
 from utils.general import check_img_size, non_max_suppression_face, apply_classifier, scale_coords, xyxy2xywh, \
@@ -124,7 +127,7 @@ def get_plate_rec_landmark(img, xyxy, conf, landmarks, class_num,device,plate_re
 
 
 
-def detect_Recognition_plate(model, orgimg, device,plate_rec_model,img_size,is_color=False):#获取车牌信息
+def detect_Recognition_plate(model, orgimg, device, plate_rec_model, img_size, is_color=False):#获取车牌信息
     # Load model
     # img_size = opt_img_size
     conf_thres = 0.3      #得分阈值
@@ -189,7 +192,7 @@ def detect_Recognition_plate(model, orgimg, device,plate_rec_model,img_size,is_c
     return dict_list
     # cv2.imwrite('result.jpg', orgimg)
 
-def draw_result(orgimg,dict_list,is_color=False):   # 车牌结果画出来
+def draw_result(orgimg, dict_list, is_color=False):   # 车牌结果画出来
     result_str =""
     for result in dict_list:
         rect_area = result['rect']
@@ -235,6 +238,40 @@ def get_second(capture):
         duration = FrameNumber/rate  # 帧速率/视频总帧数 是时间，除以60之后单位是分钟
         return int(rate),int(FrameNumber),int(duration)    
 
+def detect_main(img, save_path = "", img_path = ""):  #检测车牌
+
+    img_size = 640
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu") 
+
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    if not os.path.exists(save_path) and save_path != "": 
+        os.mkdir(save_path)
+    detect_model = load_model( 'weights/plate_detect.pt', device)
+    plate_rec_model = init_model(device, 'weights/plate_rec_color.pth', True)
+    total = sum(p.numel() for p in detect_model.parameters())
+    total_1 = sum(p.numel() for p in plate_rec_model.parameters())
+    # print("detect params: %.2fM,rec params: %.2fM" % (total/1e6,total_1/1e6))
+
+    time_b = time.time()               #开始时间
+
+    if img is None:                   
+        return
+    if img.shape[-1]==4:               #图片如果是4个通道的，将其转为3个通道
+        img=cv2.cvtColor(img,cv2.COLOR_BGRA2BGR)
+
+    dict_list=detect_Recognition_plate(detect_model, img, device, plate_rec_model,img_size,True)#检测以及识别车牌
+
+    if save_path != "": 
+        ori_img=draw_result(img, dict_list)                  #将结果画在图上
+        img_name = os.path.splitext(os.path.basename(img_path))[0] + ".jpg"  #图片名称
+        save_img_path = os.path.join(save_path, img_name)  #图片保存的路径
+        time_e=time.time()
+        time_gap = time_e-time_b                         #计算单个图片识别耗时
+        cv2.imwrite(save_img_path, ori_img)               #opencv将识别的图片保存
+        cv2.imshow("plate_recognition", ori_img)  #显示识别的图片
+        cv2.waitKey(0)
+
+    return dict_list
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

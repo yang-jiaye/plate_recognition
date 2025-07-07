@@ -1,0 +1,17 @@
+<package format="2">
+  <name>plate_recognition</name>
+  <version>0.1.0</version>
+  <description>ROS package for plate recognition.</description>
+  <maintainer email="your_email@example.com">Your Name</maintainer>
+  <license>MIT</license>
+  
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>rospy</depend>
+  <depend>cv_bridge</depend>
+  <depend>std_msgs</depend>
+  
+  <export>
+    <build_type>catkin</build_type>
+  </export>
+</package>

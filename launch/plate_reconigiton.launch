@@ -1,0 +1,8 @@
+<launch>
+<node name="plate_recognition" pkg="plate_recognition" type="main.py" output="screen">
+    <param name="latitude" value="20.0284"/>
+    <param name="longitude" value="110.3034"/>
+    <param name="license_plate" value="晋AP79V6"/>
+    <param name="flag" value="1"/>
+</node>
+</launch>
