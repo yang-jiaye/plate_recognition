@@ -25,7 +25,6 @@ def upload_rsu_data(latitude, longitude, license_plate, flag, deviceNum = "0003"
         print(f"正在向 {url} 发送数据: {params}")
         response = requests.get(url, params=params)
         if response.status_code == 200:
-            print("数据发送成功！")
             print("响应数据:", response.json())
             return response.json()
         else:

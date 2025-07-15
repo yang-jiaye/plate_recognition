@@ -23,7 +23,7 @@ from plate_recognition.plate_rec import get_plate_result,allFilePath,init_model,
 # from plate_recognition.plate_cls import cv_imread
 from plate_recognition.double_plate_split_merge import get_split_merge
 
-clors = [(255,0,0),(0,255,0),(0,0,255),(255,255,0),(0,255,255)]
+colors = [(255,0,0),(0,255,0),(0,0,255),(255,255,0),(0,255,255)]
 danger=['危','险']
 def order_points(pts):                   #四个点按照左上 右上 右下 左下排列
     rect = np.zeros((4, 2), dtype = "float32")
@@ -214,7 +214,7 @@ def draw_result(orgimg, dict_list, is_color=False):   # 车牌结果画出来
             result_p+=" "+result['plate_color']+"双层"
         result_str+=result_p+" "
         for i in range(4):  #关键点
-            cv2.circle(orgimg, (int(landmarks[i][0]), int(landmarks[i][1])), 5, clors[i], -1)
+            cv2.circle(orgimg, (int(landmarks[i][0]), int(landmarks[i][1])), 20, colors[i], -1)
         cv2.rectangle(orgimg,(rect_area[0],rect_area[1]),(rect_area[2],rect_area[3]),(0,0,255),2) #画框
         
         labelSize = cv2.getTextSize(result_p,cv2.FONT_HERSHEY_SIMPLEX,0.5,1) #获得字体的大小

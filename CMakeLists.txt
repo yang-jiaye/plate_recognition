@@ -3,6 +3,8 @@ project(plate_recognition)
 
 find_package(catkin REQUIRED COMPONENTS
   rospy
+  v2x_msgs
+  std_msgs
   cv_bridge 
 )
 
