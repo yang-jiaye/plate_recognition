@@ -170,8 +170,8 @@ def create_dwzq_file(img, timestamp_sec, timestamp_nsec, folder_type, batch_numb
             # 多个车牌结果
             for i, result in enumerate(results):
                 license_plate = result['plate_no']
-                longitude = longitude0 + random.uniform(-0.00001, 0.00001)
-                latitude = latitude0 + random.uniform(-0.00001, 0.00001)
+                longitude = longitude0 + random.uniform(-0.0001, 0.0001)
+                latitude = latitude0 + random.uniform(-0.0001, 0.0001)
                 east_west_variance = 0.15 + random.uniform(0, 0.1)
                 north_south_variance = 0.14 + random.uniform(0, 0.1)
                 
